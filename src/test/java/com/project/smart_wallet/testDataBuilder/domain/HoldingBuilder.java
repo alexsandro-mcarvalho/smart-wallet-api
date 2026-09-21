@@ -31,8 +31,8 @@ public class HoldingBuilder {
         return this;
     }
 
-    public HoldingBuilder withAveragePrice(BigDecimal averagePrice) {
-        transactionBuilder.withPrice(averagePrice);
+    public HoldingBuilder withPrice(BigDecimal price) {
+        transactionBuilder.withPrice(price);
         return this;
     }
 
