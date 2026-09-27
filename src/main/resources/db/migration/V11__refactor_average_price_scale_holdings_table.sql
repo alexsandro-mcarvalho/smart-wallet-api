@@ -1,0 +1,2 @@
+ALTER TABLE holdings
+ALTER COLUMN average_price TYPE NUMERIC(18,8)
