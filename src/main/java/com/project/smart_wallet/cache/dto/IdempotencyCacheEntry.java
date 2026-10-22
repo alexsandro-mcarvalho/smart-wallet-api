@@ -1,12 +1,11 @@
-package com.project.smart_wallet.dto.redis;
+package com.project.smart_wallet.cache.dto;
 
 import com.project.smart_wallet.domain.IdempotencyStatus;
-import com.project.smart_wallet.dto.response.CreateTransactionResponse;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class IdempotencyCache {
+public class IdempotencyCacheEntry {
 
         @Setter
         private IdempotencyStatus idempotencyStatus;
@@ -19,7 +18,7 @@ public class IdempotencyCache {
         @Setter
         private String response;
 
-        public IdempotencyCache(String payloadHash) {
+        public IdempotencyCacheEntry(String payloadHash) {
             this.idempotencyStatus = IdempotencyStatus.PROCESSING;
             this.payloadHash = payloadHash;
         }

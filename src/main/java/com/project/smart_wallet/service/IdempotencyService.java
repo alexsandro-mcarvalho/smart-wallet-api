@@ -1,12 +1,12 @@
 package com.project.smart_wallet.service;
 
+import com.project.smart_wallet.cache.IdempotencyCache;
 import com.project.smart_wallet.domain.IdempotencyStatus;
-import com.project.smart_wallet.dto.redis.IdempotencyCache;
+import com.project.smart_wallet.cache.dto.IdempotencyCacheEntry;
 import com.project.smart_wallet.conf.properties.IdempotencyProperties;
-import com.project.smart_wallet.utils.redis.IdempotencyRedisKey;
+import com.project.smart_wallet.cache.key.IdempotencyCacheKey;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
@@ -19,51 +19,35 @@ import java.util.HexFormat;
 @RequiredArgsConstructor
 public class IdempotencyService {
 
-    private final RedisTemplate<String, IdempotencyCache> redisTemplate;
+    private final IdempotencyProperties idempotencyProperties;
+
+    private final IdempotencyCache idempotencyCache;
 
     private final UserService userService;
 
-    private final IdempotencyProperties idempotencyProperties;
-
-    public String buildKey(HttpServletRequest request, String idempotencyKey) {
-        String userId = userService.getAuthenticatedUserId();
-        return IdempotencyRedisKey.buildKey(
-                request.getMethod(),
-                request.getServletPath(),
-                userId,
-                idempotencyKey
-        );
-    }
-
     public boolean markAsProcessing(String redisKey, String payloadHash) {
-        Boolean processed = redisTemplate.opsForValue().setIfAbsent(
+        return idempotencyCache.saveIfAbsent(
                 redisKey,
-                new IdempotencyCache(payloadHash),
+                new IdempotencyCacheEntry(payloadHash),
                 idempotencyProperties.processingTtl()
         );
-
-        if (processed == null) {
-            throw new IllegalStateException("Falha ao registrar o estado PROCESSING da idempotência.");
-        }
-
-        return processed;
     }
 
     public void markAsCompleted(String redisKey, HttpStatusCode statusCode, String body) {
-        IdempotencyCache idempotencyCache = redisTemplate.opsForValue().get(redisKey);
-        idempotencyCache.setStatusCode(statusCode.value());
-        idempotencyCache.setIdempotencyStatus(IdempotencyStatus.COMPLETED);
-        idempotencyCache.setResponse(body);
+        IdempotencyCacheEntry idempotencyCacheEntry = idempotencyCache.get(redisKey);
+        idempotencyCacheEntry.setStatusCode(statusCode.value());
+        idempotencyCacheEntry.setIdempotencyStatus(IdempotencyStatus.COMPLETED);
+        idempotencyCacheEntry.setResponse(body);
 
-        redisTemplate.opsForValue().set(redisKey, idempotencyCache, idempotencyProperties.completedTtl());
+        idempotencyCache.save(redisKey, idempotencyCacheEntry, idempotencyProperties.completedTtl());
     }
 
     public void markAsFailed(String redisKey) {
-        redisTemplate.delete(redisKey);
+        idempotencyCache.delete(redisKey);
     }
 
-    public IdempotencyCache getIdempotencyCache(String redisKey) {
-        return redisTemplate.opsForValue().get(redisKey);
+    public IdempotencyCacheEntry getIdempotencyCache(String redisKey) {
+        return idempotencyCache.get(redisKey);
     }
 
     public String generatePayloadHash(byte[] body) throws NoSuchAlgorithmException {
@@ -71,5 +55,15 @@ public class IdempotencyService {
         byte[] encodedHash = digest.digest(body);
 
         return HexFormat.of().formatHex(encodedHash);
+    }
+
+    public String buildKey(HttpServletRequest request, String idempotencyKey) {
+        String userId = userService.getAuthenticatedUserId();
+        return IdempotencyCacheKey.buildKey(
+                request.getMethod(),
+                request.getServletPath(),
+                userId,
+                idempotencyKey
+        );
     }
 }

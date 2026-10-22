@@ -1,10 +1,10 @@
-package com.project.smart_wallet.utils.redis;
+package com.project.smart_wallet.cache.key;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class IdempotencyRedisKey {
+public final class IdempotencyCacheKey {
 
     private final static String PREFIX = "idempotency";
 

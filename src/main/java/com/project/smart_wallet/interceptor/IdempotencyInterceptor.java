@@ -1,11 +1,11 @@
 package com.project.smart_wallet.interceptor;
 
 import com.project.smart_wallet.domain.IdempotencyStatus;
-import com.project.smart_wallet.dto.redis.IdempotencyCache;
+import com.project.smart_wallet.cache.dto.IdempotencyCacheEntry;
 import com.project.smart_wallet.exception.ConflictException;
 import com.project.smart_wallet.exception.PreconditionFailedException;
 import com.project.smart_wallet.service.IdempotencyService;
-import com.project.smart_wallet.annotation.Idempotency;
+import com.project.smart_wallet.annotation.Idempotent;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class IdempotencyInterceptor implements HandlerInterceptor {
 
             Method method = handlerMethod.getMethod();
 
-            if (!method.isAnnotationPresent(Idempotency.class)) {
+            if (!method.isAnnotationPresent(Idempotent.class)) {
                 return true;
             }
 
@@ -50,7 +50,7 @@ public class IdempotencyInterceptor implements HandlerInterceptor {
                 return true;
             }
 
-            IdempotencyCache idempotencyCache = idempotencyService.getIdempotencyCache(idempotencyCacheKey);
+            IdempotencyCacheEntry idempotencyCache = idempotencyService.getIdempotencyCache(idempotencyCacheKey);
 
             if (!idempotencyCache.getPayloadHash().equals(payloadHash)) {
                 throw new ConflictException("Idempotency-Key já utilizada para outra requisição.");
@@ -84,7 +84,7 @@ public class IdempotencyInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod handlerMethod) {
             Method method = handlerMethod.getMethod();
 
-            if (method.isAnnotationPresent(Idempotency.class) && ex != null) {
+            if (method.isAnnotationPresent(Idempotent.class) && ex != null) {
                 String idempotencyKey = request.getHeader("Idempotency-Key");
                 String idempotencyCacheKey = idempotencyService.buildKey(request, idempotencyKey);
 

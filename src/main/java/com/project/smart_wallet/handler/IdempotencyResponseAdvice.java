@@ -1,7 +1,7 @@
 package com.project.smart_wallet.handler;
 
 import com.project.smart_wallet.service.IdempotencyService;
-import com.project.smart_wallet.annotation.Idempotency;
+import com.project.smart_wallet.annotation.Idempotent;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class IdempotencyResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return returnType.hasMethodAnnotation(Idempotency.class);
+        return returnType.hasMethodAnnotation(Idempotent.class);
     }
 
     @Override
