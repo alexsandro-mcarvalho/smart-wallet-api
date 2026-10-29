@@ -1,4 +1,4 @@
-package com.project.smart_wallet.conf.webclient;
+package com.project.smart_wallet.config.webclient;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

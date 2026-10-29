@@ -3,7 +3,7 @@ package com.project.smart_wallet.service;
 import com.project.smart_wallet.cache.IdempotencyCache;
 import com.project.smart_wallet.domain.IdempotencyStatus;
 import com.project.smart_wallet.cache.dto.IdempotencyCacheEntry;
-import com.project.smart_wallet.conf.properties.IdempotencyProperties;
+import com.project.smart_wallet.config.properties.IdempotencyProperties;
 import com.project.smart_wallet.cache.key.IdempotencyCacheKey;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

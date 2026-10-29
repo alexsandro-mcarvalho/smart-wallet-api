@@ -1,4 +1,4 @@
-package com.project.smart_wallet.conf.properties;
+package com.project.smart_wallet.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

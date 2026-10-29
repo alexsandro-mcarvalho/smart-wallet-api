@@ -1,4 +1,4 @@
-package com.project.smart_wallet.conf.redis;
+package com.project.smart_wallet.config.redis;
 
 import com.project.smart_wallet.cache.dto.AssetPriceCacheEntry;
 import com.project.smart_wallet.cache.dto.IdempotencyCacheEntry;
