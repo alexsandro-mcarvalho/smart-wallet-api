@@ -4,9 +4,11 @@ import com.project.smart_wallet.domain.CustomUser;
 import com.project.smart_wallet.domain.User;
 import com.project.smart_wallet.dto.request.LoginRequest;
 import com.project.smart_wallet.dto.request.RegisterRequest;
+import com.project.smart_wallet.dto.response.LoginResponse;
 import com.project.smart_wallet.dto.response.RegisterResponse;
 import com.project.smart_wallet.dto.response.TokenResponse;
 import com.project.smart_wallet.exception.ConflictException;
+import com.project.smart_wallet.mapper.UserMapper;
 import com.project.smart_wallet.repository.UserRepository;
 import com.project.smart_wallet.service.security.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.project.smart_wallet.mapper.RegisterMapper.toResponse;
+import static com.project.smart_wallet.mapper.UserMapper.toResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class AuthService {
 
     private final TokenService tokenService;
 
-    public TokenResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(request.email(),
                 request.password());
         Authentication auth = authenticationManager.authenticate(usernamePassword);
@@ -38,7 +41,10 @@ public class AuthService {
             throw new RuntimeException();
         }
 
-        return tokenService.generateToken((CustomUser) auth.getPrincipal());
+        CustomUser user = (CustomUser) auth.getPrincipal();
+        TokenResponse token = tokenService.generateToken(user);
+
+        return new LoginResponse(toResponse(user), token);
     }
 
     public RegisterResponse register(RegisterRequest request) {

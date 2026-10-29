@@ -1,9 +1,12 @@
 package com.project.smart_wallet.controller;
 
+import com.project.smart_wallet.domain.User;
 import com.project.smart_wallet.dto.request.LoginRequest;
 import com.project.smart_wallet.dto.request.RegisterRequest;
+import com.project.smart_wallet.dto.response.LoginResponse;
 import com.project.smart_wallet.dto.response.RegisterResponse;
 import com.project.smart_wallet.dto.response.TokenResponse;
+import com.project.smart_wallet.dto.response.UserResponse;
 import com.project.smart_wallet.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +29,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequest request) {
-        TokenResponse tokenResponse = authService.login(request);
+    public ResponseEntity<UserResponse> login(@RequestBody @Valid LoginRequest request) {
+        LoginResponse loginResponse = authService.login(request);
+
+        TokenResponse tokenResponse = loginResponse.tokenResponse();
 
         ResponseCookie cookie = ResponseCookie.from("accessToken", tokenResponse.token())
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(tokenResponse.expiresIn())
                 .sameSite("Lax")
@@ -39,7 +44,7 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .build();
+                .body(loginResponse.userResponse());
     }
 
     @PostMapping("/register")
