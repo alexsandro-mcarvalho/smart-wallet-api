@@ -25,11 +25,11 @@ public final class CreateTransactionMapper {
     public static CreateTransactionResponse toResponse(Transaction entity) {
         return new CreateTransactionResponse(
                 entity.getId(),
+                AssetSummaryMapper.toResponse(entity.getAsset()),
+                entity.getType(),
                 entity.getQuantity(),
                 entity.getPrice(),
                 entity.getTransactionAt(),
-                entity.getType(),
-                AssetSummaryMapper.toResponse(entity.getAsset()),
                 entity.getCreatedAt()
         );
     }

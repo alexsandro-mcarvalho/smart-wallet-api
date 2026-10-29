@@ -7,11 +7,11 @@ import java.time.Instant;
 
 public record CreateTransactionResponse(
         Long id,
+        AssetSummaryResponse asset,
+        TransactionType type,
         BigDecimal quantity,
         BigDecimal price,
         Instant transactionAt,
-        TransactionType type,
-        AssetSummaryResponse asset,
         Instant createdAt
 ) {
 }

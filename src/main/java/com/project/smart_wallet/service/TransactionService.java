@@ -7,7 +7,7 @@ import com.project.smart_wallet.domain.Holding;
 import com.project.smart_wallet.dto.request.CreateTransactionRequest;
 import com.project.smart_wallet.dto.response.CreateTransactionResponse;
 import com.project.smart_wallet.dto.response.PaginatedResponse;
-import com.project.smart_wallet.dto.response.TransactionListResponse;
+import com.project.smart_wallet.dto.response.TransactionResponse;
 import com.project.smart_wallet.exception.NotFoundException;
 import com.project.smart_wallet.mapper.TransactionMapper;
 import com.project.smart_wallet.repository.AssetRepository;
@@ -61,9 +61,9 @@ public class TransactionService {
                 .orElseGet(() -> new Holding(transaction));
     }
 
-    public PaginatedResponse<TransactionListResponse> listTransactions(Pageable pageable) {
+    public PaginatedResponse<TransactionResponse> listTransactions(Pageable pageable) {
         User user = userService.getAuthenticatedUser();
-        Page<TransactionListResponse> paginatedTransactions = transactionRepository.findAllByUser(user, pageable)
+        Page<TransactionResponse> paginatedTransactions = transactionRepository.findAllByUser(user, pageable)
                 .map(TransactionMapper::toResponse);
 
         return toResponse(paginatedTransactions);

@@ -3,7 +3,7 @@ package com.project.smart_wallet.controller;
 import com.project.smart_wallet.dto.request.CreateTransactionRequest;
 import com.project.smart_wallet.dto.response.CreateTransactionResponse;
 import com.project.smart_wallet.dto.response.PaginatedResponse;
-import com.project.smart_wallet.dto.response.TransactionListResponse;
+import com.project.smart_wallet.dto.response.TransactionResponse;
 import com.project.smart_wallet.service.TransactionService;
 import com.project.smart_wallet.annotation.Idempotent;
 import jakarta.validation.Valid;
@@ -34,7 +34,7 @@ public class TransactionController {
     }
 
     @GetMapping
-    public PaginatedResponse<TransactionListResponse> listTransactions(
+    public PaginatedResponse<TransactionResponse> listTransactions(
             @PageableDefault(size = 3, sort = {"transactionAt"}, direction = Sort.Direction.DESC)
             Pageable pageable
     ) {
