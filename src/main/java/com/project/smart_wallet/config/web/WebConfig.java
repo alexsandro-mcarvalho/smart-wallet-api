@@ -1,4 +1,4 @@
-package com.project.smart_wallet.config;
+package com.project.smart_wallet.config.web;
 
 import com.project.smart_wallet.interceptor.IdempotencyInterceptor;
 import lombok.RequiredArgsConstructor;
