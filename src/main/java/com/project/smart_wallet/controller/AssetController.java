@@ -1,5 +1,6 @@
 package com.project.smart_wallet.controller;
 
+import com.project.smart_wallet.controller.openapi.AssetControlerOpenApi;
 import com.project.smart_wallet.dto.request.CreateAssetRequest;
 import com.project.smart_wallet.dto.response.AssetSummaryResponse;
 import com.project.smart_wallet.dto.response.CreateAssetResponse;
@@ -23,16 +24,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/assets")
 @RequiredArgsConstructor
-public class AssetController {
+public class AssetController implements AssetControlerOpenApi {
 
     private final AssetService assetService;
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CreateAssetResponse createAsset(@Valid @RequestBody CreateAssetRequest request) {
         return assetService.createAsset(request);
     }
 
+    @Override
     @GetMapping
     public PaginatedResponse<AssetSummaryResponse> listAssets(
             @PageableDefault(sort = {"name"})

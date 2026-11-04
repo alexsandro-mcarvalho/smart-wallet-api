@@ -1,5 +1,6 @@
 package com.project.smart_wallet.controller;
 
+import com.project.smart_wallet.controller.openapi.TransactionControlerOpenApi;
 import com.project.smart_wallet.dto.request.CreateTransactionRequest;
 import com.project.smart_wallet.dto.response.CreateTransactionResponse;
 import com.project.smart_wallet.dto.response.PaginatedResponse;
@@ -22,10 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/transactions")
 @RequiredArgsConstructor
-public class TransactionController {
+public class TransactionController implements TransactionControlerOpenApi {
 
     private final TransactionService transactionService;
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Idempotent
@@ -33,6 +35,7 @@ public class TransactionController {
         return transactionService.createTransaction(request);
     }
 
+    @Override
     @GetMapping
     public PaginatedResponse<TransactionResponse> listTransactions(
             @PageableDefault(size = 3, sort = {"transactionAt"}, direction = Sort.Direction.DESC)

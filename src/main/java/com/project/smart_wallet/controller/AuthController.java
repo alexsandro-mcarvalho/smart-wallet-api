@@ -1,6 +1,6 @@
 package com.project.smart_wallet.controller;
 
-import com.project.smart_wallet.domain.User;
+import com.project.smart_wallet.controller.openapi.AuthControlerOpenApi;
 import com.project.smart_wallet.dto.request.LoginRequest;
 import com.project.smart_wallet.dto.request.RegisterRequest;
 import com.project.smart_wallet.dto.response.LoginResponse;
@@ -24,10 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControlerOpenApi {
 
     private final AuthService authService;
 
+    @Override
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody @Valid LoginRequest request) {
         LoginResponse loginResponse = authService.login(request);
@@ -47,6 +48,7 @@ public class AuthController {
                 .body(loginResponse.userResponse());
     }
 
+    @Override
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public RegisterResponse register(@RequestBody @Valid RegisterRequest request) {
