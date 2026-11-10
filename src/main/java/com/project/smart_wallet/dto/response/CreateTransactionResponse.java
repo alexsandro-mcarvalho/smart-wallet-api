@@ -11,6 +11,7 @@ public record CreateTransactionResponse(
         TransactionType type,
         BigDecimal quantity,
         BigDecimal price,
+        BigDecimal unitPrice,
         Instant transactionAt,
         Instant createdAt
 ) {

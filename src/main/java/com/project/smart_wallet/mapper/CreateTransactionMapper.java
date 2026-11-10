@@ -29,6 +29,7 @@ public final class CreateTransactionMapper {
                 entity.getType(),
                 entity.getQuantity(),
                 entity.getPrice(),
+                entity.getUnitPrice(),
                 entity.getTransactionAt(),
                 entity.getCreatedAt()
         );
